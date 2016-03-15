@@ -3,7 +3,7 @@ This repository contains a bunch of stand alone experiments I'm using to evaluat
 
 ## Running these experiments
 
-Most of these experiments require just a simple http server. I use the standard *http-server* available via npm:
+Most of these experiments require just a simple http server. I use the standard [http-server](https://www.npmjs.com/package/http-server) available via npm:
 
 ```
 npm install -g http-server
@@ -21,6 +21,8 @@ Available on:
   http://127.0.0.1:8080
 Hit CTRL-C to stop the server
 ```
+
+You can also use [live-server](https://www.npmjs.com/package/live-server) to get similar functionality but with automatic reloading when any of your served pages changes.
 
 ## The list
 
