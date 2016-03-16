@@ -1,0 +1,27 @@
+
+.panel {
+    display: flex;
+    flex-direction: row;
+    margin: 15px 0 15px 0;
+}
+
+.subpanel {
+    flex: 0.5;
+    display: flex;
+}
+
+.children {
+    display: flex;
+    flex-direction: column;
+}
+
+.child {
+    display: flex;
+    flex-direction: row;
+}
+
+.child span {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+

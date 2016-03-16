@@ -6,7 +6,7 @@ export class IdService {
     id: string;
 
     constructor() {
-        this.id = this.generateUUID();
+        this.regenerate();
     }
 
     regenerate() {
