@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNet.SignalR.Client;
 using Microsoft.Owin.Hosting;
+using Serilog;
+using Server.Api;
 
 namespace Server
 {
@@ -11,14 +10,35 @@ namespace Server
     {
         static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.ColoredConsole()
+                .CreateLogger();
+
             string baseAddress = "http://localhost:9123/";
 
             // Start OWIN host 
             using (WebApp.Start<Startup>(url: baseAddress))
             {
+                // Let's wire up a SignalR client here to easily inspect what
+                //  calls are happening
+                //
+                var hubConnection = new HubConnection(baseAddress);
+                IHubProxy eventHubProxy = hubConnection.CreateHubProxy("EventHub");
+                eventHubProxy.On<Event>("OnEvent", ev => Log.Information("Event received - {@ev}", ev));
+                hubConnection.Start().Wait();
+
+                // Join the channel for task updates in our console window
+                //
+                eventHubProxy.Invoke("Subscribe", Constants.TaskChannel);
+
                 Console.WriteLine($"Server is running on {baseAddress}");
                 Console.WriteLine("Press <enter> to stop server");
                 Console.ReadLine();
+
+                // Leave the channel for task updates before shutting things down
+                //
+                eventHubProxy.Invoke("Unsubscribe", Constants.TaskChannel);
+
             }
 
 

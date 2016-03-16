@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http;
-using Microsoft.Owin;
-using Microsoft.Owin.Hosting;
+﻿using System.Web.Http;
 using Owin;
 
 namespace Server
@@ -18,6 +11,10 @@ namespace Server
             //  we open up CORS
             //
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
+
+            // Wire up SignalR with our logging helper to see what's happening
+            //
+            app.MapSignalR();
 
             // Build up the WebAPI middleware
             //
