@@ -24,7 +24,7 @@ namespace Server
                 //
                 var hubConnection = new HubConnection(baseAddress);
                 IHubProxy eventHubProxy = hubConnection.CreateHubProxy("EventHub");
-                eventHubProxy.On<Event>("OnEvent", ev => Log.Information("Event received - {@ev}", ev));
+                eventHubProxy.On<ChannelEvent>("OnEvent", ev => Log.Information("Event received - {@ev}", ev));
                 hubConnection.Start().Wait();
 
                 // Join the channel for task updates in our console window

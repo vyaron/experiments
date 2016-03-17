@@ -17,7 +17,7 @@ namespace Server.Api
             Log.Information("Client {ConnectionId} subscribing to channel {channel}", Context.ConnectionId, channel);
 
             await Groups.Add(Context.ConnectionId, channel);
-            Clients.OthersInGroup(channel).OnEvent(new Event
+            Clients.OthersInGroup(channel).OnEvent(new ChannelEvent
             {
                 Name = "client.connected",
                 Json = JsonConvert.SerializeObject(Context.ConnectionId)
@@ -34,7 +34,7 @@ namespace Server.Api
             Log.Information("Client {ConnectionId} unsubscribing from channel {channel}", Context.ConnectionId, channel);
 
             await Groups.Remove(Context.ConnectionId, channel);
-            Clients.OthersInGroup(channel).OnEvent(new Event
+            Clients.OthersInGroup(channel).OnEvent(new ChannelEvent
             {
                 Name = "client.disconnected",
                 Json = JsonConvert.SerializeObject(Context.ConnectionId)
@@ -47,7 +47,7 @@ namespace Server.Api
         /// <param name="ev"></param>
         /// <param name="channel"></param>
         /// <returns></returns>
-        public void Publish(Event ev, string channel)
+        public void Publish(ChannelEvent ev, string channel)
         {
             Log.Information("Client {ConnectionId} published event to channel {channel} - {@ev}", Context.ConnectionId, channel, ev);
 
@@ -56,7 +56,7 @@ namespace Server.Api
     }
 
 
-    public class Event
+    public class ChannelEvent
     {
         public string Name { get; set; }
 

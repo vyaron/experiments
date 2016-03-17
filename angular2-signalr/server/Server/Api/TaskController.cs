@@ -86,7 +86,7 @@ namespace Server.Api
             //  to it. So to publish the event we need to call the method that
             //  the clients will be listening on.
             //
-            _context.Clients.Group(_channel).OnEvent(new Event
+            _context.Clients.Group(_channel).OnEvent(new ChannelEvent
             {
                 Name = eventName,
                 Json = JsonConvert.SerializeObject(status)
