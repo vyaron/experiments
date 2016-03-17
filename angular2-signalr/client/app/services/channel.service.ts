@@ -1,8 +1,6 @@
 import {Injectable, Inject} from "angular2/core";
 import Rx from "rxjs/Rx";
 
-import {ChannelEvent} from "../models/channelEvent.model";
-
 // Just to get around typescript warnings
 //
 declare var $: any;
@@ -18,6 +16,11 @@ export class ChannelConfig {
     url: string;
     hubName: string;
     channel: string;
+}
+
+export class ChannelEvent {
+    Name: string;
+    Json: any;
 }
 
 class EventObservable {

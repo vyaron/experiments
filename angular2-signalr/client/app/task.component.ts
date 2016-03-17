@@ -1,9 +1,13 @@
-import {Component, Input} from 'angular2/core';
+import {Component, Input} from "angular2/core";
+import {Http, Response} from "angular2/http";
 import Rx from "rxjs/Rx";
 
-import {ApiService} from "./services/api.service";
 import {ChannelService, ConnectionState} from "./services/channel.service";
-import {Event} from "./models/event.model";
+
+class StatusEvent {
+    State: string;
+    PercentComplete: number;
+}
 
 @Component({
     selector: 'task',
@@ -11,7 +15,11 @@ import {Event} from "./models/event.model";
         <div>
             <h4>Task component bound to '{{eventName}}'</h4>
         </div>
-       
+    
+        <div>
+            <a href="#" (click)="callApi()">Call API</a>
+        </div>
+   
         <div>
             <a href="#" *ngIf="!bound" (click)="bind()">Bind</a>
             <a href="#" *ngIf="bound" (click)="unbind()">Unbind</a>
@@ -20,12 +28,14 @@ import {Event} from "./models/event.model";
 })
 export class TaskComponent {
     @Input() eventName: string;
+    @Input() apiUrl: string;
     
     bound = false;
     
     private obs: Rx.Observable<any>;
     
     constructor(
+        private http: Http,
         private channelService: ChannelService
     ) {
 
@@ -33,7 +43,7 @@ export class TaskComponent {
 
     bind() {
         this.obs = this.channelService.bind(this.eventName).subscribe(
-            (data: any) => { 
+            (data: StatusEvent) => { 
                 console.log("Event binding", data);
             });
         
@@ -45,4 +55,9 @@ export class TaskComponent {
         this.bound = false;
     }
 
+    callApi() {
+        this.http.get(this.apiUrl)
+            .map((res: Response) => res.json())
+            .subscribe((message: string) => {console.log(message);});
+    }
 }

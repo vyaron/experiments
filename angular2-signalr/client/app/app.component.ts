@@ -1,7 +1,6 @@
 import {Component, OnInit} from 'angular2/core';
 import Rx from "rxjs/Rx";
 
-import {ApiService} from "./services/api.service";
 import {ChannelService, ConnectionState} from "./services/channel.service";
 import {TaskComponent} from "./task.component";
 
@@ -17,8 +16,15 @@ import {TaskComponent} from "./task.component";
         </div>
         
         <div>
-            <task [eventName]="'longTask.status'"></task>
-            <task [eventName]="'shortTask.status'"></task>
+            <task 
+                [apiUrl]="'http://localhost:9123/tasks/long'"
+                [eventName]="'longTask.status'">
+            </task>
+            
+            <task 
+                [apiUrl]="'http://localhost:9123/tasks/short'"
+                [eventName]="'shortTask.status'">
+            </task>
         </div>
      `,
      directives: [TaskComponent]
@@ -31,7 +37,6 @@ export class AppComponent implements OnInit {
     private channel = "tasks";
 
     constructor(
-        private apiService: ApiService,
         private channelService: ChannelService
     ) {
 
