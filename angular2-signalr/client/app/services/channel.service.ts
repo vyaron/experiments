@@ -206,17 +206,7 @@ export class ChannelService {
         //  messages.
         //
 
-        // This works by creating a new observable that observes the incoming
-        //  event$ stream. However, this observable should only emit events on
-        //  a particular channel, so we add a filter here to ensure that's only 
-        //  what is passed on to subscribers.
-        //
-        // We also map the result so only the event object itself is provided.
-        //  This is because the caller already specified what channel this is for
-        //  so they are expecting to get ChannelEvent objects.
-        //
-
-        // Now we just create our internal object so we can track this observable
+        // Now we just create our internal object so we can track this subject
         //  in case someone else wants it too
         //
         channelSub = new ChannelSubject();
