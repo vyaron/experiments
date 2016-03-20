@@ -27,5 +27,7 @@ You can also use [live-server](https://www.npmjs.com/package/live-server) to get
 ## The list
 
 Here's an overall list of what's in here:
+- [angular2-signalr](angular2-signalr) - A relatively simple SignalR server with an Angular 2 client (using a channel/event model)
+- [angular2-child-injectors](angular2-child-injectors) - Exploring how angular 2 dependency injection works
 - [nadel-api-gateway-ts](nadel-api-gateway-ts) - An implementation of [Ben Nadel's ApiGateway example](http://www.bennadel.com/blog/3047-creating-specialized-http-clients-in-angular-2-beta-8.htm) using typescript
 - [angular2-template](angular2-template) - A vanilla template used to create new Angular2 examples
