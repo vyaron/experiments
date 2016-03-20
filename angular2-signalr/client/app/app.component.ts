@@ -2,7 +2,8 @@ import {Component, OnInit} from 'angular2/core';
 import Rx from "rxjs/Rx";
 
 import {ChannelService, ConnectionState} from "./services/channel.service";
-import {TaskComponent} from "./task.component";
+import {ChannelComponent} from "./channel.component";
+import {AdminChannelComponent} from "./adminChannel.component";
 
 @Component({
     selector: 'my-app',
@@ -15,26 +16,28 @@ import {TaskComponent} from "./task.component";
             <span>Connection state: {{connectionState$ | async}}</span>
         </div>
         
-        <div>
-            <task 
-                [apiUrl]="'http://localhost:9123/tasks/long'"
-                [eventName]="'longTask.status'">
-            </task>
-            
-            <task 
-                [apiUrl]="'http://localhost:9123/tasks/short'"
-                [eventName]="'shortTask.status'">
-            </task>
+        <div class="flex-row">
+            <admin-channel class="flex"
+                [channel]="'admin'"></admin-channel>
         </div>
+        <div class="flex-row">
+            <channel class="flex"
+                [channel]="'one'"></channel>
+            <channel class="flex"
+                [channel]="'two'"></channel>
+        </div>
+
      `,
-     directives: [TaskComponent]
+    directives: [AdminChannelComponent, ChannelComponent]
 })
 export class AppComponent implements OnInit {
-    subscribed = false;
 
+    // An internal "copy" of the connection state stream used because
+    //  we want to map the values of the original stream. If we didn't 
+    //  need to do that then we could use the service's observable 
+    //  right in the template.
+    //   
     connectionState$: Rx.Observable<string>;
-
-    private channel = "tasks";
 
     constructor(
         private channelService: ChannelService
@@ -46,17 +49,24 @@ export class AppComponent implements OnInit {
             .map((state: ConnectionState) => { return ConnectionState[state]; });
 
         this.channelService.error$.subscribe(
-            (error: any) => { console.error("Error:", error); },
+            (error: any) => { console.error(error); },
             (error: any) => { console.error("errors$ error", error); }
+        );
+
+        // Wire up a handler for the starting$ observable to log the
+        //  success/fail result
+        //
+        this.channelService.starting$.subscribe(
+            () => { console.log("signalr service has been started"); },
+            () => { console.error("signalr service failed to start!"); }
         );
     }
 
     ngOnInit() {
-        this.channelService.start().subscribe(
-            () => {
-                console.log("signalr service has been started");
-            },
-            () => { console.error("signalr service failed to start!"); }
-        );
+        // Start the connection up!
+        //
+        console.log("Starting the channel service");
+
+        this.channelService.start();
     }
 }
