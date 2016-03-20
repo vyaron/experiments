@@ -12,7 +12,7 @@ namespace Server
             //
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
 
-            // Wire up SignalR with our logging helper to see what's happening
+            // Add SignalR to the OWIN pipeline
             //
             app.MapSignalR();
 

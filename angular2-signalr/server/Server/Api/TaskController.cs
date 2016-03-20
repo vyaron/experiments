@@ -81,17 +81,17 @@ namespace Server.Api
 
         private void PublishEvent(string eventName, Status status)
         {
-            // From .NET code like this we can't invoke the methods that
-            //  exist on our actual Hub class...because we only have a proxy
-            //  to it. So to publish the event we need to call the method that
-            //  the clients will be listening on.
-            //
-            _context.Clients.Group(_channel).OnEvent(Constants.TaskChannel, new ChannelEvent
-            {
-                ChannelName = Constants.TaskChannel,
-                Name = eventName,
-                Data = status
-            });
+        // From .NET code like this we can't invoke the methods that
+        //  exist on our actual Hub class...because we only have a proxy
+        //  to it. So to publish the event we need to call the method that
+        //  the clients will be listening on.
+        //
+        _context.Clients.Group(_channel).OnEvent(Constants.TaskChannel, new ChannelEvent
+        {
+            ChannelName = Constants.TaskChannel,
+            Name = eventName,
+            Data = status
+        });
         }
     }
 

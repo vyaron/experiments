@@ -37,8 +37,6 @@ namespace Server
                 Console.ReadLine();
 
             }
-
-
         }
     }
 }
