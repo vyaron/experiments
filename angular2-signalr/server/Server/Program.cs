@@ -24,20 +24,16 @@ namespace Server
                 //
                 var hubConnection = new HubConnection(baseAddress);
                 IHubProxy eventHubProxy = hubConnection.CreateHubProxy("EventHub");
-                eventHubProxy.On<ChannelEvent>("OnEvent", ev => Log.Information("Event received - {@ev}", ev));
+                eventHubProxy.On<string, ChannelEvent>("OnEvent", (channel, ev) => Log.Information("Event received on {channel} channel - {@ev}", channel, ev));
                 hubConnection.Start().Wait();
 
                 // Join the channel for task updates in our console window
                 //
-                eventHubProxy.Invoke("Subscribe", Constants.TaskChannel);
+                eventHubProxy.Invoke("Subscribe", Constants.AdminChannel);
 
                 Console.WriteLine($"Server is running on {baseAddress}");
                 Console.WriteLine("Press <enter> to stop server");
                 Console.ReadLine();
-
-                // Leave the channel for task updates before shutting things down
-                //
-                eventHubProxy.Invoke("Unsubscribe", Constants.TaskChannel);
 
             }
 

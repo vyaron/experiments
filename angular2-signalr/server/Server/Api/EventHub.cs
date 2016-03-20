@@ -1,65 +1,152 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR;
 using Newtonsoft.Json;
 using Serilog;
 
 namespace Server.Api
 {
+    /// <summary>
+    /// A signalR hub that provides channel-based event broadcasting
+    /// that clients can subscribe to
+    /// </summary>
     public class EventHub : Hub
     {
-        /// <summary>
-        /// Allow a client to receive events on a particular channel
-        /// </summary>
-        /// <param name="channel">The name of the channel</param>
-        /// <returns></returns>
         public async Task Subscribe(string channel)
         {
-            Log.Information("Client {ConnectionId} subscribing to channel {channel}", Context.ConnectionId, channel);
-
             await Groups.Add(Context.ConnectionId, channel);
-            Clients.OthersInGroup(channel).OnEvent(new ChannelEvent
+
+            var ev = new ChannelEvent
             {
-                Name = "client.connected",
-                Json = JsonConvert.SerializeObject(Context.ConnectionId)
-            });
+                ChannelName = Constants.AdminChannel,
+                Name = "user.subscribed",
+                Data = new
+                {
+                    Context.ConnectionId,
+                    ChannelName = channel
+                }
+            };
+
+            await Publish(ev);
         }
 
-        /// <summary>
-        /// Allow a client to stop receiving events on a particular channel
-        /// </summary>
-        /// <param name="channel">The name of the channel</param>
-        /// <returns></returns>
         public async Task Unsubscribe(string channel)
         {
-            Log.Information("Client {ConnectionId} unsubscribing from channel {channel}", Context.ConnectionId, channel);
-
             await Groups.Remove(Context.ConnectionId, channel);
-            Clients.OthersInGroup(channel).OnEvent(new ChannelEvent
+
+            var ev = new ChannelEvent
             {
-                Name = "client.disconnected",
-                Json = JsonConvert.SerializeObject(Context.ConnectionId)
-            });
+                ChannelName = Constants.AdminChannel,
+                Name = "user.unsubscribed",
+                Data = new
+                {
+                    Context.ConnectionId,
+                    ChannelName = channel
+                }
+            };
+
+            await Publish(ev);
         }
 
-        /// <summary>
-        /// A method for clients to publish events that others should know about
-        /// </summary>
-        /// <param name="ev"></param>
-        /// <param name="channel"></param>
-        /// <returns></returns>
-        public void Publish(ChannelEvent ev, string channel)
+
+        public Task Publish(ChannelEvent channelEvent)
         {
-            Log.Information("Client {ConnectionId} published event to channel {channel} - {@ev}", Context.ConnectionId, channel, ev);
+            Clients.Group(channelEvent.ChannelName).OnEvent(channelEvent.ChannelName, channelEvent);
 
-            Clients.OthersInGroup(channel).OnEvent(ev);
+            if (channelEvent.ChannelName != Constants.AdminChannel)
+            {
+                // Push this out on the admin channel
+                //
+                Clients.Group(Constants.AdminChannel).OnEvent(Constants.AdminChannel, channelEvent);
+            }
+
+            return Task.FromResult(0);
         }
+
+
+        public override Task OnConnected()
+        {
+            var ev = new ChannelEvent
+            {
+                ChannelName = Constants.AdminChannel,
+                Name = "user.connected",
+                Data = new
+                {
+                    Context.ConnectionId,
+                }
+            };
+
+            Publish(ev);
+
+            return base.OnConnected();
+        }
+
+
+        public override Task OnDisconnected(bool stopCalled)
+        {
+            var ev = new ChannelEvent
+            {
+                ChannelName = Constants.AdminChannel,
+                Name = "user.disconnected",
+                Data = new
+                {
+                    Context.ConnectionId,
+                }
+            };
+
+            Publish(ev);
+
+            return base.OnDisconnected(stopCalled);
+        }
+
     }
 
 
+
+    /// <summary>
+    /// A generic object to represent a broadcasted event in our SignalR hubs
+    /// </summary>
     public class ChannelEvent
     {
+        /// <summary>
+        /// The name of the event
+        /// </summary>
         public string Name { get; set; }
 
-        public string Json { get; set; }
+        /// <summary>
+        /// The name of the channel the event is associated with
+        /// </summary>
+        public string ChannelName { get; set; }
+
+        /// <summary>
+        /// The date/time that the event was created
+        /// </summary>
+        public DateTimeOffset Timestamp { get; set; }
+
+        /// <summary>
+        /// The data associated with the event
+        /// </summary>
+        public object Data
+        {
+            get { return _data; }
+            set
+            {
+                _data = value;
+                this.Json = JsonConvert.SerializeObject(_data);
+            }
+        }
+        private object _data;
+
+        /// <summary>
+        /// A JSON representation of the event data. This is set automatically
+        /// when the Data property is assigned.
+        /// </summary>
+        public string Json { get; private set; }
+
+        public ChannelEvent()
+        {
+            Timestamp = DateTimeOffset.Now;
+        }
     }
 }

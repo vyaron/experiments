@@ -89,7 +89,7 @@ namespace Server.Api
             _context.Clients.Group(_channel).OnEvent(new ChannelEvent
             {
                 Name = eventName,
-                Json = JsonConvert.SerializeObject(status)
+                Data = status
             });
         }
     }
