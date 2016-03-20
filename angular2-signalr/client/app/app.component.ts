@@ -2,8 +2,7 @@ import {Component, OnInit} from 'angular2/core';
 import Rx from "rxjs/Rx";
 
 import {ChannelService, ConnectionState} from "./services/channel.service";
-import {ChannelComponent} from "./channel.component";
-import {AdminChannelComponent} from "./adminChannel.component";
+import {TaskComponent} from "./task.component";
 
 @Component({
     selector: 'my-app',
@@ -17,18 +16,16 @@ import {AdminChannelComponent} from "./adminChannel.component";
         </div>
         
         <div class="flex-row">
-            <admin-channel class="flex"
-                [channel]="'admin'"></admin-channel>
-        </div>
-        <div class="flex-row">
-            <channel class="flex"
-                [channel]="'one'"></channel>
-            <channel class="flex"
-                [channel]="'two'"></channel>
+            <task class="flex"
+                [eventName]="'longTask.status'"
+                [apiUrl]="'http://localhost:9123/tasks/long'"></task>
+            <task class="flex"
+                [eventName]="'shortTask.status'"
+                [apiUrl]="'http://localhost:9123/tasks/short'"></task>
         </div>
 
      `,
-    directives: [AdminChannelComponent, ChannelComponent]
+    directives: [TaskComponent]
 })
 export class AppComponent implements OnInit {
 
@@ -49,7 +46,7 @@ export class AppComponent implements OnInit {
             .map((state: ConnectionState) => { return ConnectionState[state]; });
 
         this.channelService.error$.subscribe(
-            (error: any) => { console.error(error); },
+            (error: any) => { console.warn(error); },
             (error: any) => { console.error("errors$ error", error); }
         );
 
@@ -58,7 +55,7 @@ export class AppComponent implements OnInit {
         //
         this.channelService.starting$.subscribe(
             () => { console.log("signalr service has been started"); },
-            () => { console.error("signalr service failed to start!"); }
+            () => { console.warn("signalr service failed to start!"); }
         );
     }
 

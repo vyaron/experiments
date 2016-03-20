@@ -30,6 +30,7 @@ namespace Server
                 // Join the channel for task updates in our console window
                 //
                 eventHubProxy.Invoke("Subscribe", Constants.AdminChannel);
+                eventHubProxy.Invoke("Subscribe", Constants.TaskChannel);
 
                 Console.WriteLine($"Server is running on {baseAddress}");
                 Console.WriteLine("Press <enter> to stop server");

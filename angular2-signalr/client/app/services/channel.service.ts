@@ -36,9 +36,9 @@ export class ChannelEvent {
     }
 }
 
-class ChannelObservable {
+class ChannelSubject {
     channel: string;
-    observable: Rx.Observable<ChannelEvent>;
+    subject: Rx.Subject<ChannelEvent>;
 }
 
 /**
@@ -56,13 +56,13 @@ export class ChannelService {
      * stream will emit a value.
      */
     starting$: Rx.Observable<any>;
-    
+
     /**
      * connectionState$ provides the current state of the underlying
      * connection as an observable stream.
      */
     connectionState$: Rx.Observable<ConnectionState>;
-    
+
     /**
      * error$ provides a stream of any error messages that occur on the 
      * SignalR connection
@@ -74,12 +74,6 @@ export class ChannelService {
     private connectionStateSubject = new Rx.Subject<ConnectionState>();
     private startingSubject = new Rx.Subject<any>();
     private errorSubject = new Rx.Subject<any>();
-    
-    // These are used internally to push out events that are received 
-    //  on the appropriate observables 
-    //
-    private eventSubject = new Rx.Subject<any>();
-    private event$: Rx.Observable<ChannelEvent>;
 
     // These are used to track the internal SignalR state 
     //
@@ -88,19 +82,22 @@ export class ChannelService {
 
     // An internal array to track what channel subscriptions exist 
     //
-    private observables = new Array<ChannelObservable>();
+    private subjects = new Array<ChannelSubject>();
 
     constructor(
         @Inject(SignalrWindow) private window: SignalrWindow,
         @Inject("channel.config") private channelConfig: ChannelConfig
     ) {
+        if (this.window.$ === undefined || this.window.$.hubConnection === undefined) {
+            throw new Error("The variable '$' or the .hubConnection() function are not defined...please check the SignalR scripts have been loaded properly");
+        }
+
         // Set up our observables
         //
         this.connectionState$ = this.connectionStateSubject.asObservable();
         this.error$ = this.errorSubject.asObservable();
         this.starting$ = this.startingSubject.asObservable();
 
-        this.event$ = this.eventSubject.asObservable();
         this.hubConnection = this.window.$.hubConnection();
         this.hubConnection.url = channelConfig.url;
         this.hubProxy = this.hubConnection.createHubProxy(channelConfig.hubName);
@@ -111,16 +108,16 @@ export class ChannelService {
             let newState = ConnectionState.Connecting;
 
             switch (state.newState) {
-                case $.signalR.connectionState.connecting:
+                case this.window.$.signalR.connectionState.connecting:
                     newState = ConnectionState.Connecting;
                     break;
-                case $.signalR.connectionState.connected:
+                case this.window.$.signalR.connectionState.connected:
                     newState = ConnectionState.Connected;
                     break;
-                case $.signalR.connectionState.reconnecting:
+                case this.window.$.signalR.connectionState.reconnecting:
                     newState = ConnectionState.Reconnecting;
                     break;
-                case $.signalR.connectionState.disconnected:
+                case this.window.$.signalR.connectionState.disconnected:
                     newState = ConnectionState.Disconnected;
                     break;
             }
@@ -141,7 +138,20 @@ export class ChannelService {
         this.hubProxy.on("onEvent", (channel: string, ev: ChannelEvent) => {
             //console.log(`onEvent - ${channel} channel`, ev);
 
-            this.eventSubject.next({channel: channel, channelEvent: ev});
+            // This method acts like a broker for incoming messages. We 
+            //  check the interal array of subjects to see if one exists
+            //  for the channel this came in on, and then emit the event
+            //  on it. Otherwise we ignore the message.
+            //
+            let channelSub = this.subjects.find((x: ChannelSubject) => {
+                return x.channel === channel;
+            }) as ChannelSubject;
+
+            // If we found a subject then emit the event on it
+            //
+            if (channelSub !== undefined) {
+                return channelSub.subject.next(ev);
+            }
         });
 
     }
@@ -169,21 +179,24 @@ export class ChannelService {
             });
     }
 
-    /** Get an observable that will contain the data associated with a specific channel */
+    /** 
+     * Get an observable that will contain the data associated with a specific 
+     * channel 
+     * */
     sub(channel: string): Rx.Observable<ChannelEvent> {
 
         // Try to find an observable that we already created for the requested 
         //  channel
         //
-        let channelObs = this.observables.find((x: ChannelObservable) => {
+        let channelSub = this.subjects.find((x: ChannelSubject) => {
             return x.channel === channel;
-        }) as ChannelObservable;
+        }) as ChannelSubject;
 
         // If we already have one for this event, then just return it
         //
-        if (channelObs !== undefined) {
+        if (channelSub !== undefined) {
             console.log(`Found existing observable for ${channel} channel`)
-            return channelObs.observable;
+            return channelSub.subject.asObservable();
         }
 
         //
@@ -192,7 +205,25 @@ export class ChannelService {
         //  and then create an observable that the caller can use to received
         //  messages.
         //
-        
+
+        // This works by creating a new observable that observes the incoming
+        //  event$ stream. However, this observable should only emit events on
+        //  a particular channel, so we add a filter here to ensure that's only 
+        //  what is passed on to subscribers.
+        //
+        // We also map the result so only the event object itself is provided.
+        //  This is because the caller already specified what channel this is for
+        //  so they are expecting to get ChannelEvent objects.
+        //
+
+        // Now we just create our internal object so we can track this observable
+        //  in case someone else wants it too
+        //
+        channelSub = new ChannelSubject();
+        channelSub.channel = channel;
+        channelSub.subject = new Rx.Subject<ChannelEvent>();
+        this.subjects.push(channelSub);
+
         // Now SignalR is asynchronous, so we need to ensure the connection is
         //  established before we call any server methods. So we'll subscribe to 
         //  the starting$ stream since that won't emit a value until the connection
@@ -204,38 +235,14 @@ export class ChannelService {
                     console.log(`Successfully subscribed to ${channel} channel`);
                 })
                 .fail((error: any) => {
-                    console.log(`Failed to subscribe to ${channel} channel`, error);
-                    this.errorSubject.next(error);
+                    channelSub.subject.error(error);
                 });
         },
-        () => {
-            console.warn("Failed to subscribe to channel because service is not running");
-        });
-        
-        // This works by creating a new observable that observes the incoming
-        //  event$ stream. However, this observable should only emit events on
-        //  a particular channel, so we add a filter here to ensure that's only 
-        //  what is passed on to subscribers.
-        //
-        // We also map the result so only the event object itself is provided.
-        //  This is because the caller already specified what channel this is for
-        //  so they are expecting to get ChannelEvent objects.
-        //
-        let obs = this.event$
-            .filter((x: any) => { return x.channel === channel; })
-            .map((x: any) => { return x.channelEvent;});
+            (error: any) => {
+                channelSub.subject.error(error);
+            });
 
-        // Now we just create our internal object so we can track this observable
-        //  in case someone else wants it too
-        //
-        channelObs = new ChannelObservable();
-        channelObs.channel = channel;
-        channelObs.observable = obs;
-        this.observables.push(channelObs);
-
-        console.log(`Created new observable for ${channel} channel`)
-
-        return obs;
+        return channelSub.subject.asObservable();
     }
 
     // Not quite sure how to handle this (if at all) since there could be

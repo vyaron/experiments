@@ -1,8 +1,8 @@
-import {Component, Input} from "angular2/core";
+import {Component, OnInit, Input} from "angular2/core";
 import {Http, Response} from "angular2/http";
 import Rx from "rxjs/Rx";
 
-import {ChannelService, ConnectionState} from "./services/channel.service";
+import {ChannelService, ChannelEvent} from "./services/channel.service";
 
 class StatusEvent {
     State: string;
@@ -16,24 +16,28 @@ class StatusEvent {
             <h4>Task component bound to '{{eventName}}'</h4>
         </div>
     
-        <div>
-            <a href="#" (click)="callApi()">Call API</a>
-        </div>
-   
-        <div>
-            <a href="#" *ngIf="!bound" (click)="bind()">Bind</a>
-            <a href="#" *ngIf="bound" (click)="unbind()">Unbind</a>
+        <div class="commands">
+            <textarea 
+                class="console"
+                cols="50" 
+                rows="15"
+                disabled
+                [value]="messages"></textarea> 
+                
+            <div class="commands__input">
+                <button (click)="callApi()">Call API</button>
+            </div>
         </div>
     `
 })
-export class TaskComponent {
+export class TaskComponent implements OnInit {
     @Input() eventName: string;
     @Input() apiUrl: string;
-    
-    bound = false;
-    
-    private obs: Rx.Observable<any>;
-    
+
+    messages = "";
+
+    private channel = "tasks";
+
     constructor(
         private http: Http,
         private channelService: ChannelService
@@ -41,23 +45,46 @@ export class TaskComponent {
 
     }
 
-    bind() {
-        this.obs = this.channelService.bind(this.eventName).subscribe(
-            (data: StatusEvent) => { 
-                console.log("Event binding", data);
-            });
-        
-        this.bound = true;
+    ngOnInit() {
+        // Get an observable for events emitted on this channel
+        //
+        this.channelService.sub(this.channel).subscribe(
+            (x: ChannelEvent) => {
+                switch (x.Name) {
+                    case this.eventName: { this.appendStatusUpdate(x); }
+                }
+            },
+            (error: any) => {
+                console.warn("Attempt to join channel failed!", error);
+            }
+        )
     }
 
-    unbind() {
-        this.obs.unsubscribe();
-        this.bound = false;
+
+    private appendStatusUpdate(ev: ChannelEvent): void {
+        // Just prepend this to the messages string shown in the textarea
+        //
+        let date = new Date();
+        switch (ev.Data.State) {
+            case "starting": {
+                this.messages = `${date.toLocaleTimeString()} : starting\n` + this.messages;
+                break;
+            }
+
+            case "complete": {
+                this.messages = `${date.toLocaleTimeString()} : complete\n` + this.messages;
+                break;
+            }
+
+            default: {
+                this.messages = `${date.toLocaleTimeString()} : ${ev.Data.State} : ${ev.Data.PercentComplete} % complete\n` + this.messages;
+            }
+        }
     }
 
     callApi() {
         this.http.get(this.apiUrl)
             .map((res: Response) => res.json())
-            .subscribe((message: string) => {console.log(message);});
+            .subscribe((message: string) => { console.log(message); });
     }
 }
