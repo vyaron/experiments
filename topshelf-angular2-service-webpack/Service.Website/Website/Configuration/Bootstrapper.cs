@@ -16,7 +16,7 @@ namespace Service.Website.Website.Configuration
             // Add a new path for static content so our typescript files located in
             //  the 'App' folder can be served to SystemJS
             //
-            this.Conventions.StaticContentsConventions.Add(StaticContentConventionBuilder.AddDirectory("App"));
+            this.Conventions.StaticContentsConventions.Add(StaticContentConventionBuilder.AddDirectory("assets"));
         }
     }
 }

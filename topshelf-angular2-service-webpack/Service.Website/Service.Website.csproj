@@ -89,20 +89,32 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <Content Include="assets\app.bundle.js.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="package.json" />
     <None Include="packages.config" />
+    <None Include="tsconfig.json" />
+    <None Include="typings.json" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\app.bundle.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="webpack.config.js" />
     <Content Include="Website\Modules\Root\views\index.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App\app.component.ts">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App\main.ts">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="App\app.component.ts" />
+    <Content Include="App\main.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="typings\browser.d.ts" />
+    <TypeScriptCompile Include="typings\browser\ambient\es6-shim\index.d.ts" />
+    <TypeScriptCompile Include="typings\main.d.ts" />
+    <TypeScriptCompile Include="typings\main\ambient\es6-shim\index.d.ts" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

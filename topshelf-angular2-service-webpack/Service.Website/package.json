@@ -1,0 +1,27 @@
+{
+  "name": "service.website",
+  "version": "1.0.0",
+  "description": "An example that hosts Angular 2 inside a Windows service",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "build:watch": "webpack --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sam Storie",
+  "license": "ISC",
+  "dependencies": {
+    "angular2": "^2.0.0-beta.14",
+    "es6-shim": "^0.35.0",
+    "reflect-metadata": "^0.1.2",
+    "rxjs": "^5.0.0-beta.2",
+    "zone.js": "^0.6.6"
+  },
+  "devDependencies": {
+    "ts-loader": "^0.8.1",
+    "typescript": "^1.8.9",
+    "typings": "^0.7.12",
+    "webpack": "^1.12.14"
+  },
+  "-vs-binding": { "BeforeBuild": [ "build" ] }
+}
