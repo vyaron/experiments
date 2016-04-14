@@ -27,6 +27,7 @@ You can also use [live-server](https://www.npmjs.com/package/live-server) to get
 ## The list
 
 Here's an overall list of what's in here:
+- [topshelf-angular2-service-webpack](topshelf-angular2-service-webpack) - An example showing how to host an Angular2 and WebAPI website in a Windows service using Topshelf and webpack to self-host everything
 - [topshelf-angular2-service](topshelf-angular2-service) - An example showing how to host an Angular2 and WebAPI website in a Windows service using Topshelf
 - [angular2-signalr](angular2-signalr) - A relatively simple SignalR server with an Angular 2 client (using a channel/event model)
 - [angular2-child-injectors](angular2-child-injectors) - Exploring how angular 2 dependency injection works
