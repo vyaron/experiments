@@ -27,6 +27,7 @@ You can also use [live-server](https://www.npmjs.com/package/live-server) to get
 ## The list
 
 Here's an overall list of what's in here:
+- [angular2-multiple-applications](angular2-multiple-applications) - A simple POC that shows it's possible to bootstrap multiple Angular 2 applications on the same page
 - [topshelf-angular2-service-webpack](topshelf-angular2-service-webpack) - An example showing how to host an Angular2 and WebAPI website in a Windows service using Topshelf and webpack to self-host everything
 - [topshelf-angular2-service](topshelf-angular2-service) - An example showing how to host an Angular2 and WebAPI website in a Windows service using Topshelf
 - [angular2-signalr](angular2-signalr) - A relatively simple SignalR server with an Angular 2 client (using a channel/event model)
