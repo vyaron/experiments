@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Angular 2 QuickStart</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">    
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- 1. Load libraries -->
+    <!-- IE required polyfills, in this exact order -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.0/es6-shim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.19.26/system-polyfills.js"></script>
+  <script src="https://npmcdn.com/angular2@2.0.0-beta.15/es6/dev/src/testing/shims_for_IE.js"></script>
+
+  <script src="https://code.angularjs.org/2.0.0-beta.15/angular2-polyfills.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.19.26/system.js"></script>
+  <script src="https://npmcdn.com/typescript@1.8.10/lib/typescript.js"></script>
+  <script src="https://code.angularjs.org/2.0.0-beta.15/Rx.js"></script>
+  <script src="https://code.angularjs.org/2.0.0-beta.15/angular2.dev.js"></script>
+
+    <!-- 2. Configure SystemJS -->
+    <script>
+      System.config({
+        transpiler: 'typescript', 
+        typescriptOptions: { emitDecoratorMetadata: true }, 
+        packages: {'app': {defaultExtension: 'ts'}} 
+      });
+      System.import('app/main')
+            .then((m) => {
+              // In an actual app these are simply rendered on the page using
+              //  some server-side variables. The API URL could change based
+              //  on where the server is deployed, and the token could be
+              //  provided by some OAuth mechanism completely outside of 
+              //  Angular 2.
+              //
+              var apiUrl = "https://my-api";
+              var apiToken = "SOME_SERVER_PROVIDED_TOKEN";
+              
+              // Now to *actually* bootstrap the application we need to 
+              //  call the function we created in the main module that 
+              //  wraps Angular's bootstrap function. Of course, that 
+              //  function is expecting the two arguments we have designed
+              //
+              m.RunApplication(apiUrl, apiToken); 
+              
+            }, console.error.bind(console));
+    </script>
+  </head>
+
+  <!-- 3. Display the application -->
+  <body>
+    <my-app>Loading...</my-app>
+  </body>
+</html>
