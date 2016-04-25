@@ -24,8 +24,15 @@
         typescriptOptions: { emitDecoratorMetadata: true }, 
         packages: {'app': {defaultExtension: 'ts'}} 
       });
-      System.import('app/main')
-            .then((m) => {
+      
+      // Now we just import the main module like normal, but we're going to leverage
+      //  the callback option to do something with it
+      //
+      System.import('app/main').then(
+          // Now we're going provide a callback to let us control what happens with
+          //  the imported module since all it does is export a function.
+          //
+          (m) => {
               // In an actual app these are simply rendered on the page using
               //  some server-side variables. The API URL could change based
               //  on where the server is deployed, and the token could be
