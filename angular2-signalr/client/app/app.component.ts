@@ -1,5 +1,5 @@
-import {Component, OnInit} from 'angular2/core';
-import Rx from "rxjs/Rx";
+import {Component, OnInit} from '@angular/core';
+import {Observable} from "rxjs/Observable";
 
 import {ChannelService, ConnectionState} from "./services/channel.service";
 import {TaskComponent} from "./task.component";
@@ -34,7 +34,7 @@ export class AppComponent implements OnInit {
     //  need to do that then we could use the service's observable 
     //  right in the template.
     //   
-    connectionState$: Rx.Observable<string>;
+    connectionState$: Observable<string>;
 
     constructor(
         private channelService: ChannelService
