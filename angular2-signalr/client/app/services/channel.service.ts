@@ -1,5 +1,6 @@
-import {Injectable, Inject} from "angular2/core";
-import Rx from "rxjs/Rx";
+import {Injectable, Inject} from "@angular/core";
+import {Subject} from "rxjs/Subject";
+import {Observable} from "rxjs/Observable";
 
 /**
  * When SignalR runs it will add functions to the global $ variable 
@@ -38,7 +39,7 @@ export class ChannelEvent {
 
 class ChannelSubject {
     channel: string;
-    subject: Rx.Subject<ChannelEvent>;
+    subject: Subject<ChannelEvent>;
 }
 
 /**
@@ -55,25 +56,25 @@ export class ChannelService {
      * connection is ready or not. On a successful connection this
      * stream will emit a value.
      */
-    starting$: Rx.Observable<any>;
+    starting$: Observable<any>;
 
     /**
      * connectionState$ provides the current state of the underlying
      * connection as an observable stream.
      */
-    connectionState$: Rx.Observable<ConnectionState>;
+    connectionState$: Observable<ConnectionState>;
 
     /**
      * error$ provides a stream of any error messages that occur on the 
      * SignalR connection
      */
-    error$: Rx.Observable<string>;
+    error$: Observable<string>;
 
     // These are used to feed the public observables 
     //
-    private connectionStateSubject = new Rx.Subject<ConnectionState>();
-    private startingSubject = new Rx.Subject<any>();
-    private errorSubject = new Rx.Subject<any>();
+    private connectionStateSubject = new Subject<ConnectionState>();
+    private startingSubject = new Subject<any>();
+    private errorSubject = new Subject<any>();
 
     // These are used to track the internal SignalR state 
     //
@@ -183,7 +184,7 @@ export class ChannelService {
      * Get an observable that will contain the data associated with a specific 
      * channel 
      * */
-    sub(channel: string): Rx.Observable<ChannelEvent> {
+    sub(channel: string): Observable<ChannelEvent> {
 
         // Try to find an observable that we already created for the requested 
         //  channel
@@ -211,7 +212,7 @@ export class ChannelService {
         //
         channelSub = new ChannelSubject();
         channelSub.channel = channel;
-        channelSub.subject = new Rx.Subject<ChannelEvent>();
+        channelSub.subject = new Subject<ChannelEvent>();
         this.subjects.push(channelSub);
 
         // Now SignalR is asynchronous, so we need to ensure the connection is

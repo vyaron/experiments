@@ -1,6 +1,5 @@
-import {Component, OnInit, Input} from "angular2/core";
-import {Http, Response} from "angular2/http";
-import Rx from "rxjs/Rx";
+import {Component, OnInit, Input} from "@angular/core";
+import {Http, Response} from "@angular/http";
 
 import {ChannelService, ChannelEvent} from "./services/channel.service";
 
