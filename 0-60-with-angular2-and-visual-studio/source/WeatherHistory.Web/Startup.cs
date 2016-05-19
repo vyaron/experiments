@@ -7,16 +7,23 @@ namespace WeatherHistory.Web
     {
         public void Configuration(IAppBuilder appBuilder)
         {
-            var httpConfiguration = new HttpConfiguration();
-
-            // We'll use attribute based routing instead of the 
-            //  convention-based approach
+            // Host all the WebAPI components underneath a path so we can
+            //  easily deploy a traditional site at the root of the web
+            //  application
             //
-            httpConfiguration.MapHttpAttributeRoutes();
+            appBuilder.Map("/api", api =>
+            {
+                var httpConfiguration = new HttpConfiguration();
 
-            // Now add in web api to the OWIN pipeline
-            //
-            appBuilder.UseWebApi(httpConfiguration);
+                // We'll use attribute based routing instead of the 
+                //  convention-based approach
+                //
+                httpConfiguration.MapHttpAttributeRoutes();
+
+                // Now add in web api to the OWIN pipeline
+                //
+                api.UseWebApi(httpConfiguration);
+            });
         }
     }
 }
