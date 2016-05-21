@@ -35,6 +35,8 @@ namespace WeatherHistory.Web
                 //
                 api.UseWebApi(httpConfiguration);
             });
+
+            appBuilder.UseNancy();
         }
     }
 }
