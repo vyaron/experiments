@@ -39,16 +39,20 @@ namespace WeatherHistory.Web.Api
                 return BadRequest("The zip code could not be mapped to a latitude and longitude");
             }
 
-            // Create our containing list of temps
-            //
-            var temps = new List<HistoricalTemperature>();
+            var zipcodeWeather = new ZipcodeWeather
+            {
+                City = zipCodeResponse.City,
+                State = zipCodeResponse.State,
+                Latitude = zipCodeResponse.Latitude,
+                Longitude = zipCodeResponse.Longitude
+            };
 
             // Grab the current date so we can create offsets from it
             //
             var startDate = DateTime.Now;
 
-            // Now loop 10 times and use the index each time to make a request back
-            //  in time (using years)
+            // Now loop according to 'years' and use the index each time to make a request back
+            //  in time
             //
             foreach (var offset in Enumerable.Range(0, (int) years))
             {
@@ -63,11 +67,9 @@ namespace WeatherHistory.Web.Api
 
                 // Create the temp object we need to return and add it to the list
                 //
-                temps.Add(new HistoricalTemperature
+                zipcodeWeather.HistoricalTemperatures.Add(new HistoricalTemperature
                 {
                     Date = pastDate,
-                    Latitude = zipCodeResponse.Latitude,
-                    Longitude = zipCodeResponse.Longitude,
                     High = response.daily.data[0].temperatureMax,
                     Low = response.daily.data[0].temperatureMin
                 });
@@ -76,7 +78,7 @@ namespace WeatherHistory.Web.Api
             // Use the WebAPI base method to return a 200-response with the list as
             //  the payload
             //
-            return Ok(temps);
+            return Ok(zipcodeWeather);
         }
 
         /// <summary>
