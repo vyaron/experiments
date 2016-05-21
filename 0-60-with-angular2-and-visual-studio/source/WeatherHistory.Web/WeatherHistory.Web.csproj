@@ -116,7 +116,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\TemperaturesController.cs" />
-    <Compile Include="Models\HistoricalTemperature.cs" />
     <Compile Include="Models\ZipCodeApiResponse.cs" />
     <Compile Include="Models\ZipcodeWeather.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
