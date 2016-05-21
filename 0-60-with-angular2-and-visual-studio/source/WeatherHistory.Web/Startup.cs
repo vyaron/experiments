@@ -36,6 +36,9 @@ namespace WeatherHistory.Web
                 api.UseWebApi(httpConfiguration);
             });
 
+            // Add nancy to the pipeline after WebAPI so the API can
+            //  handle any requests it is configured for first
+            //
             appBuilder.UseNancy();
         }
     }
