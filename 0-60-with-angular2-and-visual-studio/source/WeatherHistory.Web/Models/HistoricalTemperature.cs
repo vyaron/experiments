@@ -6,12 +6,12 @@ namespace WeatherHistory.Web.Models
     {
         public DateTime Date { get; set; }
 
-        public double Latitude { get; set; }
+        public float Latitude { get; set; }
 
-        public double Longitude { get; set; }
+        public float Longitude { get; set; }
 
-        public double Low { get; set; }
+        public float Low { get; set; }
 
-        public double High { get; set; }
+        public float High { get; set; }
     }
 }

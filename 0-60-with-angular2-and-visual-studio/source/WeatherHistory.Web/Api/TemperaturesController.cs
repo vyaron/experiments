@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
+using ForecastIO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
@@ -22,37 +25,67 @@ namespace WeatherHistory.Web.Api
         //  route
         //
         [Route("")]
-        public async Task<IHttpActionResult> Get(string zipCode)
+        public IHttpActionResult Get(string zipCode, int? years = 10)
         {
             // Now we can make our first API call to map the zip code
             //  to the geo coordinates we need
             //
-            var zipCodeResponse = await RequestGeoFromZipcode(zipCode);
+            var zipCodeResponse = RequestGeoFromZipcode(zipCode);
 
-            // To start, just return a list of dummy results to show the API 
-            //  endpoint is working
+            // Let's make sure the zip code was mapped properly before proceeding
             //
-            var today = DateTime.Now;
-
-            // Now our dummy data will actually use the latitude and longitude 
-            //  retrieved from the zip code API
-            //
-            var temps = new List<HistoricalTemperature>
+            if (zipCodeResponse == null)
             {
-                new HistoricalTemperature {Date = today, Latitude = zipCodeResponse.Latitude, Longitude = zipCodeResponse.Longitude, High = 85, Low = 55},
-                new HistoricalTemperature {Date = today.AddYears(-1), Latitude = zipCodeResponse.Latitude, Longitude = zipCodeResponse.Longitude, High = 85, Low = 55},
-                new HistoricalTemperature {Date = today.AddYears(-2), Latitude = zipCodeResponse.Latitude, Longitude = zipCodeResponse.Longitude, High = 85, Low = 55},
-                new HistoricalTemperature {Date = today.AddYears(-3), Latitude = zipCodeResponse.Latitude, Longitude = zipCodeResponse.Longitude, High = 85, Low = 55},
-                new HistoricalTemperature {Date = today.AddYears(-4), Latitude = zipCodeResponse.Latitude, Longitude = zipCodeResponse.Longitude, High = 85, Low = 55}
-            };
+                return BadRequest("The zip code could not be mapped to a latitude and longitude");
+            }
 
-            // There's no real error condition here so just return the 200
-            //  response with our List automatically serialized for the caller
+            // Create our containing list of temps
+            //
+            var temps = new List<HistoricalTemperature>();
+
+            // Grab the current date so we can create offsets from it
+            //
+            var startDate = DateTime.Now;
+
+            // Now loop 10 times and use the index each time to make a request back
+            //  in time (using years)
+            //
+            foreach (var offset in Enumerable.Range(0, (int) years))
+            {
+                // Calculate the date for this iteration
+                //
+                var pastDate = startDate.AddYears(-offset);
+
+                // Make the actual forecast.io call
+                //
+                var request = new ForecastIORequest(ConfigurationManager.AppSettings["forecast-io-key"], zipCodeResponse.Latitude, zipCodeResponse.Longitude, pastDate, Unit.us);
+                var response = request.Get();
+
+                // Create the temp object we need to return and add it to the list
+                //
+                temps.Add(new HistoricalTemperature
+                {
+                    Date = pastDate,
+                    Latitude = zipCodeResponse.Latitude,
+                    Longitude = zipCodeResponse.Longitude,
+                    High = response.daily.data[0].temperatureMax,
+                    Low = response.daily.data[0].temperatureMin
+                });
+            }
+
+            // Use the WebAPI base method to return a 200-response with the list as
+            //  the payload
             //
             return Ok(temps);
         }
 
-        private async Task<ZipCodeApiResponse> RequestGeoFromZipcode(string zipcode)
+        /// <summary>
+        /// Map a zip code string into a response that contains the latitude, 
+        /// longitude & city name.
+        /// </summary>
+        /// <param name="zipcode"></param>
+        /// <returns>A valid object if the zip code could be mapped, otherwise null in any error condition.</returns>
+        private ZipCodeApiResponse RequestGeoFromZipcode(string zipcode)
         {
             // Create a RestSharp client we can use to make the API call
             //
@@ -69,7 +102,14 @@ namespace WeatherHistory.Web.Api
             // Now any HTTP call will be asynchronous, but this is trivial to handle with
             //  the async/await functionality available in .NET
             //
-            var response = await client.ExecuteTaskAsync(request);
+            var response = client.Execute(request);
+
+            // Let's make sure the request is valid before attempting to decode anything
+            //
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return null;
+            }
 
             // Finally, we need to "decode" the JSON data returned so we can load it
             //  into our internal object.
@@ -82,8 +122,8 @@ namespace WeatherHistory.Web.Api
             var zipCodeResponse = new ZipCodeApiResponse
             {
                 Zipcode = Convert.ToString(content["zip_code"]),
-                Latitude = Convert.ToDouble(content["lat"]),
-                Longitude = Convert.ToDouble(content["lng"]),
+                Latitude = Convert.ToSingle(content["lat"]),
+                Longitude = Convert.ToSingle(content["lng"]),
                 City = Convert.ToString(content["city"]),
                 State = Convert.ToString(content["state"])
             };
