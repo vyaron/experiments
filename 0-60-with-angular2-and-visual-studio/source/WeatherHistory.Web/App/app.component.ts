@@ -1,10 +1,13 @@
 ﻿import {Component} from "@angular/core";
 import {Http, Response} from "@angular/http";
 
+import {CHART_DIRECTIVES} from "ng2-charts/ng2-charts";
+
 import {ZipcodeWeather, ZipcodeWeatherMapper} from "./zipcodeWeather.model";
 
 @Component({
     selector: "my-weather-app",
+    directives: [CHART_DIRECTIVES],
     styles: [`
         .flex-col {
             display: flex;
@@ -52,10 +55,13 @@ import {ZipcodeWeather, ZipcodeWeatherMapper} from "./zipcodeWeather.model";
             <div class="result" *ngIf="zipcodeWeather">
                 <span>{{zipcodeWeather.city}}, {{zipcodeWeather.state}}</span>
                 <span>{{zipcodeWeather.latitude}} {{zipcodeWeather.longitude}}</span>
-                <div class="flex-col"
-                     *ngFor="let temp of zipcodeWeather.historicalTemperatures">
-                    <span>{{temp.date}} {{temp.low}} {{temp.high}}</span>   
-                </div>
+
+                <base-chart class="chart"
+                           [datasets]="barChartData"
+                           [labels]="barChartLabels"
+                           [options]="barChartOptions"
+                           [legend]="barChartLegend"
+                           [chartType]="barChartType"></base-chart>
             <div>
         </div>
     `,
@@ -68,10 +74,18 @@ export class AppComponent {
 
     loading = false;
 
+    barChartOptions: any = {
+        scaleShowVerticalLines: false,
+        responsive: true
+    };
+    barChartType: string = 'bar';
+    barChartLegend: boolean = true;
+    barChartLabels: string[];
+    barChartData: any[];
+
     constructor(
         private http: Http
-    )
-    {
+    ) {
     }
 
 
@@ -83,14 +97,29 @@ export class AppComponent {
         this.http
             .get(`http://localhost:52588/api/temperatures?zipcode=${this.zipcode}`)
             .subscribe(
-                (response: Response) => {
-                    this.zipcodeWeather = ZipcodeWeatherMapper.fromObject(response.json());
-                    this.loading = false;
-                },
-                (error: Response) => {
-                    this.errorMessage = error.json().message;
-                    this.loading = false;
-                }
-        );
+            (response: Response) => {
+                this.loading = false;
+                this.zipcodeWeather = ZipcodeWeatherMapper.fromObject(response.json());
+
+                // Now map the response into the data we need for the chart
+                //
+                this.barChartLabels = this.zipcodeWeather.HistoricalTemperatures.map(x => x.date.getFullYear().toString());
+
+                this.barChartData = [
+                    {
+                        data: this.zipcodeWeather.HistoricalTemperatures.map(x => x.low),
+                        label: "Low"
+                    },
+                    {
+                        data: this.zipcodeWeather.HistoricalTemperatures.map(x => x.high),
+                        label: "High"
+                    }
+                ];
+            },
+            (error: Response) => {
+                this.errorMessage = error.json().message;
+                this.loading = false;
+            }
+            );
     }
 }
