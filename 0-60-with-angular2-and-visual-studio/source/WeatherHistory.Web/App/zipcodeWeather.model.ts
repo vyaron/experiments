@@ -41,6 +41,8 @@ export class HistoricalTemperatureMapper {
 
         Object.assign(result, x);
 
+        result.date = new Date(x.date);
+
         return result;
     }
 
