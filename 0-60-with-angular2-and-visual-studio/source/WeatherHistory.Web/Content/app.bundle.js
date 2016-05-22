@@ -49371,25 +49371,28 @@
 	var AppComponent = (function () {
 	    function AppComponent(http) {
 	        this.http = http;
+	        this.loading = false;
 	    }
 	    AppComponent.prototype.loadWeather = function () {
 	        var _this = this;
+	        this.errorMessage = undefined;
+	        this.zipcodeWeather = undefined;
+	        this.loading = true;
 	        this.http
 	            .get("http://localhost:52588/api/temperatures?zipcode=" + this.zipcode)
 	            .subscribe(function (response) {
 	            _this.zipcodeWeather = zipcodeWeather_model_1.ZipcodeWeatherMapper.fromObject(response.json());
+	            _this.loading = false;
 	        }, function (error) {
-	            console.log(error);
-	            _this.zipcodeWeather = undefined;
-	        }, function () {
-	            console.log("Request complete");
+	            _this.errorMessage = error.json().message;
+	            _this.loading = false;
 	        });
 	    };
 	    AppComponent = __decorate([
 	        core_1.Component({
 	            selector: "my-weather-app",
-	            styles: ["\n        .flex-col {\n            display: flex;\n            flex-direction: column;\n        }\n\n        .result {\n            display: flex;\n            flex-direction: column;\n            margin-top: 15px;\n        }\n    "],
-	            template: "\n        <div class=\"flex-col\">\n            <div>\n                <input \n                    type=\"text\"\n                    [(ngModel)]=\"zipcode\"/>\n                <button\n                    (click)=\"loadWeather()\">\n                    Load weather\n                </button>\n            </div>\n\n            <div class=\"result\" *ngIf=\"zipcodeWeather\">\n                <span>{{zipcodeWeather.city}}, {{zipcodeWeather.state}}</span>\n                <span>{{zipcodeWeather.latitude}} {{zipcodeWeather.longitude}}</span>\n                <div class=\"flex-col\"\n                     *ngFor=\"let temp of zipcodeWeather.historicalTemperatures\">\n                    <span>{{temp.date}} {{temp.low}} {{temp.high}}</span>   \n                </div>\n            <div>\n        </div>\n    ",
+	            styles: ["\n        .flex-col {\n            display: flex;\n            flex-direction: column;\n        }\n\n        .loading {\n\n        }\n\n        .error {\n            margin: 5px;\n            padding: 10px;\n            background-color: red;\n            color: white;\n        }\n\n        .result {\n            display: flex;\n            flex-direction: column;\n            margin-top: 15px;\n        }\n    "],
+	            template: "\n        <div class=\"flex-col\">\n            <div>\n                <input \n                    type=\"text\"\n                    (keyUp.enter)=\"loadWeather()\"\n                    [(ngModel)]=\"zipcode\"/>\n                <button\n                    (click)=\"loadWeather()\">\n                    Load weather\n                </button>\n            </div>\n\n            <div class=\"loading\" *ngIf=\"loading\">\n                Loading weather data...\n            </div>\n\n            <div class=\"error\" *ngIf=\"errorMessage\">\n                {{errorMessage}}\n            </div>\n\n            <div class=\"result\" *ngIf=\"zipcodeWeather\">\n                <span>{{zipcodeWeather.city}}, {{zipcodeWeather.state}}</span>\n                <span>{{zipcodeWeather.latitude}} {{zipcodeWeather.longitude}}</span>\n                <div class=\"flex-col\"\n                     *ngFor=\"let temp of zipcodeWeather.historicalTemperatures\">\n                    <span>{{temp.date}} {{temp.low}} {{temp.high}}</span>   \n                </div>\n            <div>\n        </div>\n    ",
 	        }), 
 	        __metadata('design:paramtypes', [http_1.Http])
 	    ], AppComponent);

@@ -11,6 +11,17 @@ import {ZipcodeWeather, ZipcodeWeatherMapper} from "./zipcodeWeather.model";
             flex-direction: column;
         }
 
+        .loading {
+
+        }
+
+        .error {
+            margin: 5px;
+            padding: 10px;
+            background-color: red;
+            color: white;
+        }
+
         .result {
             display: flex;
             flex-direction: column;
@@ -22,11 +33,20 @@ import {ZipcodeWeather, ZipcodeWeatherMapper} from "./zipcodeWeather.model";
             <div>
                 <input 
                     type="text"
+                    (keyUp.enter)="loadWeather()"
                     [(ngModel)]="zipcode"/>
                 <button
                     (click)="loadWeather()">
                     Load weather
                 </button>
+            </div>
+
+            <div class="loading" *ngIf="loading">
+                Loading weather data...
+            </div>
+
+            <div class="error" *ngIf="errorMessage">
+                {{errorMessage}}
             </div>
 
             <div class="result" *ngIf="zipcodeWeather">
@@ -44,6 +64,9 @@ export class AppComponent {
 
     zipcode: string;
     zipcodeWeather: ZipcodeWeather;
+    errorMessage: string;
+
+    loading = false;
 
     constructor(
         private http: Http
@@ -53,18 +76,20 @@ export class AppComponent {
 
 
     loadWeather() {
+        this.errorMessage = undefined;
+        this.zipcodeWeather = undefined;
+        this.loading = true;
+
         this.http
             .get(`http://localhost:52588/api/temperatures?zipcode=${this.zipcode}`)
             .subscribe(
                 (response: Response) => {
                     this.zipcodeWeather = ZipcodeWeatherMapper.fromObject(response.json());
+                    this.loading = false;
                 },
-                (error: any) => {
-                    console.log(error);
-                    this.zipcodeWeather = undefined;
-                },
-                () => {
-                    console.log("Request complete");
+                (error: Response) => {
+                    this.errorMessage = error.json().message;
+                    this.loading = false;
                 }
         );
     }
