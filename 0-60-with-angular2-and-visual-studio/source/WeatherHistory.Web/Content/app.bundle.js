@@ -49367,17 +49367,20 @@
 	};
 	var core_1 = __webpack_require__(35);
 	var http_1 = __webpack_require__(309);
+	var zipcodeWeather_model_1 = __webpack_require__(330);
 	var AppComponent = (function () {
 	    function AppComponent(http) {
 	        this.http = http;
 	    }
 	    AppComponent.prototype.loadWeather = function () {
+	        var _this = this;
 	        this.http
 	            .get("http://localhost:52588/api/temperatures?zipcode=" + this.zipcode)
 	            .subscribe(function (response) {
-	            console.log(response);
+	            _this.zipcodeWeather = zipcodeWeather_model_1.ZipcodeWeatherMapper.fromObject(response.json());
 	        }, function (error) {
 	            console.log(error);
+	            _this.zipcodeWeather = undefined;
 	        }, function () {
 	            console.log("Request complete");
 	        });
@@ -49385,8 +49388,8 @@
 	    AppComponent = __decorate([
 	        core_1.Component({
 	            selector: "my-weather-app",
-	            styles: ["\n        .container {\n            display: flex;\n            flex-direction: flex-row;\n        }\n    "],
-	            template: "\n        <div class=\"container\">\n            <div>\n                <input \n                    type=\"text\"\n                    [(ngModel)]=\"zipcode\"/>\n                <button\n                    (click)=\"loadWeather()\">\n                    Load weather\n                </button>\n            </div>\n        </div>\n    ",
+	            styles: ["\n        .flex-col {\n            display: flex;\n            flex-direction: column;\n        }\n\n        .result {\n            display: flex;\n            flex-direction: column;\n            margin-top: 15px;\n        }\n    "],
+	            template: "\n        <div class=\"flex-col\">\n            <div>\n                <input \n                    type=\"text\"\n                    [(ngModel)]=\"zipcode\"/>\n                <button\n                    (click)=\"loadWeather()\">\n                    Load weather\n                </button>\n            </div>\n\n            <div class=\"result\" *ngIf=\"zipcodeWeather\">\n                <span>{{zipcodeWeather.city}}, {{zipcodeWeather.state}}</span>\n                <span>{{zipcodeWeather.latitude}} {{zipcodeWeather.longitude}}</span>\n                <div class=\"flex-col\"\n                     *ngFor=\"let temp of zipcodeWeather.historicalTemperatures\">\n                    <span>{{temp.date}} {{temp.low}} {{temp.high}}</span>   \n                </div>\n            <div>\n        </div>\n    ",
 	        }), 
 	        __metadata('design:paramtypes', [http_1.Http])
 	    ], AppComponent);
@@ -52063,6 +52066,55 @@
 	}());
 	exports.BrowserJsonp = BrowserJsonp;
 	//# sourceMappingURL=browser_jsonp.js.map
+
+/***/ },
+/* 330 */
+/***/ function(module, exports) {
+
+	"use strict";
+	var ZipcodeWeather = (function () {
+	    function ZipcodeWeather() {
+	        this.HistoricalTemperatures = new Array();
+	    }
+	    return ZipcodeWeather;
+	}());
+	exports.ZipcodeWeather = ZipcodeWeather;
+	var HistoricalTemperature = (function () {
+	    function HistoricalTemperature() {
+	    }
+	    return HistoricalTemperature;
+	}());
+	exports.HistoricalTemperature = HistoricalTemperature;
+	var ZipcodeWeatherMapper = (function () {
+	    function ZipcodeWeatherMapper() {
+	    }
+	    ZipcodeWeatherMapper.fromObject = function (x) {
+	        var result = new ZipcodeWeather();
+	        Object.assign(result, x);
+	        result.HistoricalTemperatures = HistoricalTemperatureMapper.fromArray(x.historicalTemperatures);
+	        return result;
+	    };
+	    return ZipcodeWeatherMapper;
+	}());
+	exports.ZipcodeWeatherMapper = ZipcodeWeatherMapper;
+	var HistoricalTemperatureMapper = (function () {
+	    function HistoricalTemperatureMapper() {
+	    }
+	    HistoricalTemperatureMapper.fromObject = function (x) {
+	        var result = new HistoricalTemperature();
+	        Object.assign(result, x);
+	        return result;
+	    };
+	    HistoricalTemperatureMapper.fromArray = function (x) {
+	        if (x === undefined || x === null) {
+	            return new Array();
+	        }
+	        return x.map(function (i) { return HistoricalTemperatureMapper.fromObject(i); });
+	    };
+	    return HistoricalTemperatureMapper;
+	}());
+	exports.HistoricalTemperatureMapper = HistoricalTemperatureMapper;
+
 
 /***/ }
 /******/ ]);

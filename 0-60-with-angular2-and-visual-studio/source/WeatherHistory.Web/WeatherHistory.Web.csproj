@@ -144,6 +144,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="App\app.component.ts" />
     <TypeScriptCompile Include="App\main.ts" />
+    <TypeScriptCompile Include="App\zipcodeWeather.model.ts" />
     <TypeScriptCompile Include="typings\globals\es6-shim\index.d.ts" />
     <TypeScriptCompile Include="typings\index.d.ts" />
   </ItemGroup>
