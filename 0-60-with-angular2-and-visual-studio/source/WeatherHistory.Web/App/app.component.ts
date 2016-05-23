@@ -1,38 +1,16 @@
 ﻿import {Component} from "@angular/core";
-import {Http, Response} from "@angular/http";
+import {Http, Headers, Response} from "@angular/http";
 
 import {CHART_DIRECTIVES} from "ng2-charts/ng2-charts";
-
+    
 import {ZipcodeWeather, ZipcodeWeatherMapper} from "./zipcodeWeather.model";
 
 @Component({
     selector: "my-weather-app",
     directives: [CHART_DIRECTIVES],
-    styles: [`
-        .flex-col {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .loading {
-
-        }
-
-        .error {
-            margin: 5px;
-            padding: 10px;
-            background-color: red;
-            color: white;
-        }
-
-        .result {
-            display: flex;
-            flex-direction: column;
-            margin-top: 15px;
-        }
-    `],
+    styles: [ require("./app.styles.scss") ],
     template: `
-        <div class="flex-col">
+        <div class="application flex-col">
             <div>
                 <input 
                     type="text"

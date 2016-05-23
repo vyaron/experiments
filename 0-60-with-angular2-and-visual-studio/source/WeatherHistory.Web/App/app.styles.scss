@@ -1,0 +1,33 @@
+﻿
+$color-0: #808080;
+
+:host {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+.application {
+	flex: 0.33;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.loading {
+}
+
+.error {
+    margin: 5px;
+    padding: 10px;
+    background-color: red;
+    color: white;
+}
+
+.result {
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+}

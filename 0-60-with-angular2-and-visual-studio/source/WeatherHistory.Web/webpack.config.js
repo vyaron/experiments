@@ -1,4 +1,6 @@
 ﻿
+var autoprefixer = require("autoprefixer");
+
 module.exports = {
     // Define the entry points for our application so webpack knows what to 
     //  use as inputs
@@ -28,7 +30,20 @@ module.exports = {
             {
                 test: /\.tsx?$/,
                 loaders: ["ts-loader"]
+            },
+
+            // Process Sass files using the sass-loader first, and then with the 
+            //  raw-loader so we can inject them into the 'styles' property of
+            //  components (to take advantage of view encapsulation)
+            //
+            {
+                test: /\.scss$/,
+                exclude: /node_modules/,
+                loaders: ['raw-loader', 'postcss-loader', 'sass-loader'] // sass-loader not scss-loader
             }
         ]
+    },
+    postcss: function () {
+        return [autoprefixer];
     }
 }
