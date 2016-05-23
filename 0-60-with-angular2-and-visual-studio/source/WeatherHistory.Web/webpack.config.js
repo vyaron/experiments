@@ -40,6 +40,14 @@ module.exports = {
                 test: /\.scss$/,
                 exclude: /node_modules/,
                 loaders: ['raw-loader', 'postcss-loader', 'sass-loader'] // sass-loader not scss-loader
+            },
+
+            // Load any HTML files into raw strings so they can be included with
+            //  the angular components in-line
+            //
+            {
+                test: /\.html$/,
+                loaders: ['html-loader']
             }
         ]
     },

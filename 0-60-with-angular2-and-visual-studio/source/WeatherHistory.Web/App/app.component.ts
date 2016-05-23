@@ -9,40 +9,7 @@ import {ZipcodeWeather, ZipcodeWeatherMapper} from "./zipcodeWeather.model";
     selector: "my-weather-app",
     directives: [CHART_DIRECTIVES],
     styles: [ require("./app.styles.scss") ],
-    template: `
-        <div class="application flex-col">
-            <div>
-                <input 
-                    type="text"
-                    (keyUp.enter)="loadWeather()"
-                    [(ngModel)]="zipcode"/>
-                <button
-                    (click)="loadWeather()">
-                    Load weather
-                </button>
-            </div>
-
-            <div class="loading" *ngIf="loading">
-                Loading weather data...
-            </div>
-
-            <div class="error" *ngIf="errorMessage">
-                {{errorMessage}}
-            </div>
-
-            <div class="result" *ngIf="zipcodeWeather">
-                <span>{{zipcodeWeather.city}}, {{zipcodeWeather.state}}</span>
-                <span>{{zipcodeWeather.latitude}} {{zipcodeWeather.longitude}}</span>
-
-                <base-chart class="chart"
-                           [datasets]="barChartData"
-                           [labels]="barChartLabels"
-                           [options]="barChartOptions"
-                           [legend]="barChartLegend"
-                           [chartType]="barChartType"></base-chart>
-            <div>
-        </div>
-    `,
+    template: require("./app.template.html"),
 })
 export class AppComponent {
 
