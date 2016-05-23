@@ -95,7 +95,11 @@ export class AppComponent {
         this.loading = true;
 
         this.http
-            .get(`http://localhost:52588/api/temperatures?zipcode=${this.zipcode}`)
+            .get(`http://localhost:52588/api/temperatures?zipcode=${this.zipcode}`, {
+                headers: new Headers({
+                    'Accept': '*/*'
+                })
+            })
             .subscribe(
             (response: Response) => {
                 this.loading = false;
