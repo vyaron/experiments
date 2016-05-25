@@ -1,0 +1,35 @@
+﻿
+// By moving our CSS into a seperate file we can leverage Visual Studio's
+//  intelli-sense, and even SASS support
+//
+$error-background: red;
+$error-foreground: white;
+
+:host {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+    color: $error-background;
+}
+
+.application {
+	flex: 0.33;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.error {
+    margin: 5px;
+    padding: 10px;
+    background-color: $error-background;
+    color: $error-foreground;
+}
+
+.result {
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+}
