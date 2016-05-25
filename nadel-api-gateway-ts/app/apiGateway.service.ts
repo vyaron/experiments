@@ -53,7 +53,7 @@ export class ApiGateway {
 
     // I perform a GET request to the API, appending the given params
     // as URL search parameters. Returns a stream.
-    get(url: string, params: any): Observable<Response> {
+    get(url: string, params: any): Observable<any> {
         let options = new ApiGatewayOptions();
         options.method = RequestMethod.Get;
         options.url = url;
@@ -68,7 +68,7 @@ export class ApiGateway {
     // and the data will be serialized as a JSON payload. If only the
     // data is present, it will be serialized as a JSON payload. Returns
     // a stream.
-    post(url: string, params: any, data: any): Observable<Response> {
+    post(url: string, params: any, data: any): Observable<any> {
         if (!data) {
             data = params;
             params = {};
