@@ -2,11 +2,13 @@ import { Component } from '@angular/core';
 import {Observable} from "rxjs";
 import {Store} from "@ngrx/store";
 
+import {AutoLogoutService} from "./auto-logout.service";
 import {INCREMENT, DECREMENT, RESET, USER_LOGGED_IN, USER_LOGGED_OUT} from "./app.reducer";
 import {IState} from "./state.model";
 
 @Component({
     selector: 'my-app',
+    providers: [AutoLogoutService],
     styles: [`
     .flex-col {
         display: flex;
@@ -51,9 +53,10 @@ export class AppComponent {
     loggedIn$: Observable<boolean>;
 
     constructor(
-        private store: Store<IState>
+        private store: Store<IState>,
+        private autoLogoutService: AutoLogoutService
     ) {
-
+        
         this.counter$ = store.select("counter");
         this.loggedIn$ = store.select("loggedIn");
 

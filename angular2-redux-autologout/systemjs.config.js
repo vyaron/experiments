@@ -36,9 +36,9 @@
     'http',
     'platform-browser',
     'platform-browser-dynamic',
-    'router',
-    'router-deprecated',
-    'upgrade',
+    //'router',
+    //'router-deprecated',
+    //'upgrade',
   ];
 
   // Add map entries for each angular package
