@@ -1,0 +1,18 @@
+{
+  "name": "angular2-redux-autologout",
+  "version": "1.0.0",
+  "description": "",
+  "main": "systemjs.config.js",
+  "dependencies": {
+    "@ngrx/core": "^1.0.0",
+    "@ngrx/store": "^2.0.0",
+    "rxjs": "^5.0.0-beta.6",
+    "zone.js": "^0.6.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sam Storie",
+  "license": "ISC"
+}

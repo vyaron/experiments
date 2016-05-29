@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import {Observable} from "rxjs";
 import {Store} from "@ngrx/store";
 
 import {AutoLogoutService} from "./auto-logout.service";
@@ -27,9 +26,9 @@ import {IState} from "./state.model";
         <span>Counter: {{counter$ | async}}</span>
         
         <div class="flex-row">
-            <button (click)="decrement()">Decrement</button>
-            <button (click)="reset()">Reset</button>
-            <button (click)="increment()">Increment</button>
+            <button (click)="decrement()" [disabled]="!(loggedIn$ | async)">Decrement</button>
+            <button (click)="reset()" [disabled]="!(loggedIn$ | async)">Reset</button>
+            <button (click)="increment()" [disabled]="!(loggedIn$ | async)">Increment</button>
         </div>
     </div>
     

@@ -12,8 +12,7 @@
     'app': 'app',
 
     '@angular': 'https://npmcdn.com/@angular', // sufficient if we didn't pin the version
-    'angular2-in-memory-web-api': 'https://npmcdn.com/angular2-in-memory-web-api', // get latest
-    'rxjs': 'https://npmcdn.com/rxjs@5.0.0-beta.6',
+    'rxjs': 'node_modules/rxjs',
     'ts': 'https://npmcdn.com/plugin-typescript@4.0.10/lib/plugin.js',
     'typescript': 'https://npmcdn.com/typescript@1.8.10/lib/typescript.js',
     '@ngrx/core': 'node_modules/@ngrx/core',
@@ -23,8 +22,7 @@
   //packages tells the System loader how to load when no filename and/or no extension
   var packages = {
     'app': { main: 'main.ts', defaultExtension: 'ts' },
-    'rxjs': { defaultExtension: 'js' },
-    'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
+    'rxjs': { main: 'Rx.js', format: 'cjs' },
     '@ngrx/core': { main: 'index.js', format: 'cjs' },
     '@ngrx/store': { main: 'index.js', format: 'cjs' }
   };
@@ -35,10 +33,7 @@
     'core',
     'http',
     'platform-browser',
-    'platform-browser-dynamic',
-    //'router',
-    //'router-deprecated',
-    //'upgrade',
+    'platform-browser-dynamic'
   ];
 
   // Add map entries for each angular package

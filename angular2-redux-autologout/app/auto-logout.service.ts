@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as Rx from "rxjs";
+import {Observable} from "rxjs";
 import {Store} from "@ngrx/store";
 
 import {ACTIVITY_TIMEOUT_OCCURRED} from "./app.reducer";
@@ -12,12 +12,15 @@ export class AutoLogoutService {
     constructor(
         store: Store<IState>
     ) { 
-        let state$ = store.asObservable() as Rx.Observable<IState>;
+        let state$ = store.asObservable() as Observable<IState>;
         
         state$
-            .map((x: IState) => Rx.Observable.Interval(5000))
-            //.switch()
+            .filter((x: IState) => x.loggedIn)
+            .map((x: IState) => Observable.interval(5000))
+            .do((x: any) => console.log("Activity detected! Timer has reset"))
+            .switch()
             .subscribe((x) => {
+                console.log("Inactivity interval expired! Dispatching timeout event")
                 store.dispatch({type: ACTIVITY_TIMEOUT_OCCURRED});
             });
         

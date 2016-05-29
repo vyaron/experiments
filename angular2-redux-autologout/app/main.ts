@@ -1,4 +1,5 @@
-import { bootstrap }    from '@angular/platform-browser-dynamic';
+
+import { bootstrap } from '@angular/platform-browser-dynamic';
 
 import {provideStore} from "@ngrx/store";
 import {appReducer} from "./app.reducer";
