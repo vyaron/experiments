@@ -6,10 +6,10 @@ export class ZipcodeWeather {
     state: string;
     latitude: number;
     longitude: number;
-    HistoricalTemperatures: Array<HistoricalTemperature>;
+    historicalTemperatures: Array<HistoricalTemperature>;
 
     constructor() {
-        this.HistoricalTemperatures = new Array<HistoricalTemperature>();
+        this.historicalTemperatures = new Array<HistoricalTemperature>();
     }
 }
 
@@ -28,7 +28,7 @@ export class ZipcodeWeatherMapper {
 
         Object.assign(result, x);
 
-        result.HistoricalTemperatures = HistoricalTemperatureMapper.fromArray(x.historicalTemperatures);
+        result.historicalTemperatures = HistoricalTemperatureMapper.fromArray(x.historicalTemperatures);
 
         return result;
     }

@@ -28,6 +28,7 @@ You can also use [live-server](https://www.npmjs.com/package/live-server) to get
 
 Here's an overall list of what's in here:
 - [0-60-with-angular2-and-visual-studio](https://github.com/sstorie/experiments/tree/master/0-60-with-angular2-and-visual-studio/source) - An example I created to support an AngularMN meetup presentation I gave
+- [angular2-redux-autologout](angular2-redux-autologout) - An exploration in using redux and rxjs to automatically log a user out after a period of inactivity
 - [angular2-bootstrap-arguments](angular2-bootstrap-arguments) - A demonstration of how external data can be provided to Angular during the bootstrap process
 - [angular2-multiple-applications](angular2-multiple-applications) - A simple POC that shows it's possible to bootstrap multiple Angular 2 applications on the same page
 - [topshelf-angular2-service-webpack](topshelf-angular2-service-webpack) - An example showing how to host an Angular2 and WebAPI website in a Windows service using Topshelf and webpack to self-host everything
