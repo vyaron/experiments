@@ -11,17 +11,15 @@
   var map = {
     'app': 'app',
 
-    '@angular': 'https://npmcdn.com/@angular', // sufficient if we didn't pin the version
+    '@angular': 'node_modules/@angular',
     'rxjs': 'node_modules/rxjs',
-    'ts': 'https://npmcdn.com/plugin-typescript@4.0.10/lib/plugin.js',
-    'typescript': 'https://npmcdn.com/typescript@1.8.10/lib/typescript.js',
     '@ngrx/core': 'node_modules/@ngrx/core',
     '@ngrx/store': 'node_modules/@ngrx/store'
   };
 
   //packages tells the System loader how to load when no filename and/or no extension
   var packages = {
-    'app': { main: 'main.ts', defaultExtension: 'ts' },
+    'app': { main: 'main.js', defaultExtension: 'js' },
     'rxjs': { main: 'Rx.js', format: 'cjs' },
     '@ngrx/core': { main: 'index.js', format: 'cjs' },
     '@ngrx/store': { main: 'index.js', format: 'cjs' }
@@ -36,33 +34,12 @@
     'platform-browser-dynamic'
   ];
 
-  // Add map entries for each angular package
-  // only because we're pinning the version with `ngVer`.
-  ngPackageNames.forEach(function (pkgName) {
-    map['@angular/' + pkgName] = 'https://npmcdn.com/@angular/' + pkgName + ngVer;
-  });
-
   // Add package entries for angular packages
   ngPackageNames.forEach(function (pkgName) {
-
-    // Bundled (~40 requests):
     packages['@angular/' + pkgName] = { main: pkgName + '.umd.js', defaultExtension: 'js' };
-
-    // Individual files (~300 requests):
-    //packages['@angular/'+pkgName] = { main: 'index.js', defaultExtension: 'js' };
   });
 
   var config = {
-    // DEMO ONLY! REAL CODE SHOULD NOT TRANSPILE IN THE BROWSER
-    transpiler: 'ts',
-    typescriptOptions: {
-      tsconfig: true
-    },
-    meta: {
-      'typescript': {
-        "exports": "ts"
-      }
-    },
     map: map,
     packages: packages
   }

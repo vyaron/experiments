@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import {Observable} from "rxjs/Observable";
+
 import {Store} from "@ngrx/store";
 
 import {AutoLogoutService} from "./auto-logout.service";
@@ -9,43 +11,42 @@ import {IState} from "./state.model";
     selector: 'my-app',
     providers: [AutoLogoutService],
     styles: [`
-    .flex-col {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 20px;
-    }
-    
-        .flex-row {
-        display: flex;
-        flex-direction: row;
-    }
-
-  `],
-    template: `
-    <div class="flex-col">
-        <span>Counter: {{counter$ | async}}</span>
+        .flex-col {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
         
-        <div class="flex-row">
-            <button (click)="decrement()" [disabled]="!(loggedIn$ | async)">Decrement</button>
-            <button (click)="reset()" [disabled]="!(loggedIn$ | async)">Reset</button>
-            <button (click)="increment()" [disabled]="!(loggedIn$ | async)">Increment</button>
+            .flex-row {
+            display: flex;
+            flex-direction: row;
+        }
+    `],
+    template: `
+        <div *ngIf="!(loggedIn$ | async)" class="flex-col">
+            <span>There is no user logged in</span>
+            <div class="flex-row">
+                <button (click)="login()">Login</button>
+            </div>
         </div>
-    </div>
-    
-    <div *ngIf="!(loggedIn$ | async)" class="flex-col">
-        <span>There is no user logged in</span>
-        <div class="flex-row">
-            <button (click)="login()">Login</button>
-        </div>
-    </div>
 
-    <div *ngIf="(loggedIn$ | async)" class="flex-col">
-        <span>You are logged in</span>
-        <div class="flex-row">
-            <button (click)="logout()">Log out</button>
+        <div *ngIf="(loggedIn$ | async)" class="flex-col">
+            <span>You are logged in</span>
+            <div class="flex-row">
+                <button (click)="logout()">Log out</button>
+            </div>
         </div>
-    </div>
-  `
+        
+        <div class="flex-col">
+            <span>Counter: {{counter$ | async}}</span>
+            
+            <div class="flex-row">
+                <button (click)="decrement()" [disabled]="!(loggedIn$ | async)">Decrement</button>
+                <button (click)="reset()" [disabled]="!(loggedIn$ | async)">Reset</button>
+                <button (click)="increment()" [disabled]="!(loggedIn$ | async)">Increment</button>
+            </div>
+        </div>
+    `
 })
 export class AppComponent {
     counter$: Observable<number>;
@@ -55,9 +56,9 @@ export class AppComponent {
         private store: Store<IState>,
         private autoLogoutService: AutoLogoutService
     ) {
-        
-        this.counter$ = store.select("counter");
-        this.loggedIn$ = store.select("loggedIn");
+
+        this.counter$ = store.select("counter") as Observable<number>;
+        this.loggedIn$ = store.select("loggedIn") as Observable<boolean>;
 
     }
 
@@ -70,11 +71,11 @@ export class AppComponent {
     increment() {
         this.store.dispatch({ type: INCREMENT });
     }
-    
+
     login() {
         this.store.dispatch({ type: USER_LOGGED_IN });
     }
-    
+
     logout() {
         this.store.dispatch({ type: USER_LOGGED_OUT });
     }
