@@ -1,5 +1,5 @@
 {
-  "name": "angular2-redux-autologout",
+  "name": "angular2-child-injectors",
   "version": "1.0.0",
   "scripts": {
     "start": "tsc && concurrently \"npm run tsc:w\" \"npm run lite\" ",
