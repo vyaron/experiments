@@ -1,17 +1,14 @@
-import {Component} from "angular2/core";
+import {Component} from "@angular/core";
 
 import {ChildComponent} from "./child.component";
 
 @Component({
 	selector: 'shared',
 	template: `
-        <div class="children">
-            <child></child>
-            <child></child>
-            <child></child>
-            <child></child>
-            <child></child>
-        </div>
+        <child></child>
+        <child></child>
+        <child></child>
+        <child></child>
     `,
     directives: [ChildComponent]
 })

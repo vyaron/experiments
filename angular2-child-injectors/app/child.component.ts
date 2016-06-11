@@ -1,20 +1,28 @@
-import {Component} from "angular2/core";
+import {Component} from "@angular/core";
 
 import {IdService} from "./id.service";
 
 @Component( {
     selector: 'child',
-    template: `
-        <div class="child">
-            <span><a href="#" (click)="idService.regenerate()">Regenerate</a></span>
-            <span>{{idService.id}}</span>
-        </div>
+     styles: [`
+        span {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+    `],
+   template: `
+        <span><a href="#" (click)="idService.regenerate()">Regenerate</a></span>
+        <span>{{idService.id}}</span>
     `
 })
 export class ChildComponent {
     
     constructor(
-        protected idService: IdService
-    )
-    {}
+        //
+        // Here we indicate we need an instance of IdService injected, but
+        //  since we're not "providing" it within this component, Angular
+        //  will walk up the injector tree finding something that can
+        //  
+        private idService: IdService
+    ) {}
 }
