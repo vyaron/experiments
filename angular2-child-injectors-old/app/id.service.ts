@@ -1,28 +1,19 @@
-import {Injectable} from "@angular/core";
+import {Injectable} from "angular2/core";
+
 
 @Injectable()
 export class IdService {
-    /**
-     * An id value that is associated with this instance of the service
-     */
     id: string;
 
     constructor() {
         this.regenerate();
     }
 
-    /**
-     * Updates this instance of the service with a new id value
-     */
-    regenerate(): void {
+    regenerate() {
         this.id = this.generateUUID();
     }
 
-    /**
-     * A simple method to generate a GUID-like value that is (for our
-     * purposes) unique every time.
-     */
-    private generateUUID(): string {
+    private generateUUID() {
         var d = new Date().getTime();
         var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             var r = (d + Math.random() * 16) % 16 | 0;
