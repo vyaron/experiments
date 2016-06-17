@@ -5,7 +5,7 @@
  */
 (function (global) {
 
-  var ngVer = '@2.0.0-rc.1'; // lock in the angular package version; do not let it float to current!
+  var ngVer = '@2.0.0-rc.2'; // lock in the angular package version; do not let it float to current!
 
   //map tells the System loader where to look for things
   var map = {
@@ -26,12 +26,13 @@
     'compiler',
     'core',
     'platform-browser',
-    'platform-browser-dynamic'
+    'platform-browser-dynamic',
+    'forms'
   ];
 
   // Add package entries for angular packages
   ngPackageNames.forEach(function (pkgName) {
-    packages['@angular/' + pkgName] = { main: pkgName + '.umd.js', defaultExtension: 'js' };
+    packages['@angular/' + pkgName] = { main: 'bundles/' + pkgName + '.umd.js', defaultExtension: 'js' };
   });
 
   var config = {
