@@ -1,0 +1,22 @@
+<h2>Angular 2 OnPush FormControl demo</h2>
+
+<div class="example">
+    <span>
+        The checkbox below can be used to automatically mark the component to be
+        checked for changes in the Subscribe() handler for the valueChanges 
+        observable. This is a must if you're using the OnPush change detection
+        strategy.
+    </span>
+    <br/>
+    <label><input #i type="checkbox" (change)="markForCheck = i.checked">Mark the app component to be checked when the value changes</label>
+</div>
+
+<div class="example">
+    <h4>Filter example ... mmm ... bacon</h4>
+    <div>
+        Lorem filter: <input type="text" [formControl]="loremFilter" />
+    </div>
+    <div class="list">
+        <span class="list-item" *ngFor="let word of filteredLorem">{{word}}</span>
+    </div>
+</div>
