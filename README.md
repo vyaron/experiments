@@ -27,6 +27,7 @@ You can also use [live-server](https://www.npmjs.com/package/live-server) to get
 ## The list
 
 Here's an overall list of what's in here:
+- [angular2-onpush-form-control](https://github.com/sstorie/experiments/tree/master/angular2-onpush-form-control) - Exploring the effect of using `OnPush` change detection when subscribing to changes in Angular's FormControl class
 - [0-60-with-angular2-and-visual-studio](https://github.com/sstorie/experiments/tree/master/0-60-with-angular2-and-visual-studio/source) - An example I created to support an AngularMN meetup presentation I gave
 - [angular2-redux-autologout](angular2-redux-autologout) - An exploration in using redux and rxjs to automatically log a user out after a period of inactivity
 - [angular2-bootstrap-arguments](angular2-bootstrap-arguments) - A demonstration of how external data can be provided to Angular during the bootstrap process
