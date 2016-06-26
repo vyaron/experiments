@@ -2,21 +2,35 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import {Observable} from "rxjs/Rx";
 
 import {CanComponentDeactivate} from "../shared/index";
-import {AddFormComponent} from "./add-form.component";
+import {EntityFormComponent, Entity} from "../shared/index";
 
 @Component({
     moduleId: module.id,
-    directives: [AddFormComponent],
+    directives: [EntityFormComponent],
     templateUrl: 'add.component.html'
 })
 export class AddComponent implements OnInit, CanComponentDeactivate {
-    @ViewChild(AddFormComponent) addForm: AddFormComponent;
+    entity: Entity;
+    @ViewChild(EntityFormComponent) entityForm: EntityFormComponent;
 
-    constructor() { }
+    constructor() {
+        this.entity = new Entity();
+     }
 
     ngOnInit() { }
 
-    canDeactivate(): Observable<boolean> {
-        return this.addForm.canDeactivate();
+    resetEntity(): void {
+        console.log("resetting entity");
+        this.entity = new Entity();
+    }
+
+    saveEntity(entityToSave: Entity): void {
+        console.log("saving entity", entityToSave);
+
+       this.resetEntity();
+    }
+
+    canDeactivate(): boolean | Observable<boolean> {
+        return this.entityForm.canDeactivate();
     }
 }

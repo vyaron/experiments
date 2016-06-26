@@ -1,4 +1,7 @@
-<form [formGroup]="addForm">
+<form 
+    *ngIf="active" 
+    [formGroup]="entityForm"
+    (ngSubmit)="submit()">
     <table>
         <tr>
             <td><label>String value:</label></td>
@@ -10,5 +13,10 @@
         </tr>
     </table>
 
-    <button [disabled]="!addForm.valid" type="submit">Submit</button>
+    <span (click)="reset.emit()">reset</span>
+    <button [disabled]="!entityForm.valid" type="submit">Submit</button>
 </form>
+
+<div>
+    {{entityForm.value | json}}
+</div>

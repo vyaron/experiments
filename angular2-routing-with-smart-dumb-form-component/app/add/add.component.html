@@ -1,5 +1,8 @@
 <div>
-    <span>Add</span>
+    <span>Add a new entity</span>
 </div>
 
-<add-form></add-form>
+<entity-form
+    [entity]="entity"
+    (reset)="resetEntity()"
+    (save)="saveEntity($event)"></entity-form>
