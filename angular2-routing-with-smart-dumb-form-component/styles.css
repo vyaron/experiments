@@ -1,0 +1,15 @@
+
+header {
+  width: 800px;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 16px;
+}
+
+header > a {
+  margin-left: 8px;
+}
+
+.flex {
+  flex: 1;
+}
