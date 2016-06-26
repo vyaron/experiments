@@ -9,13 +9,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var add_form_component_1 = require("./add-form.component");
 var AddComponent = (function () {
     function AddComponent() {
     }
     AddComponent.prototype.ngOnInit = function () { };
+    AddComponent.prototype.canDeactivate = function () {
+        return this.addForm.canDeactivate();
+    };
+    __decorate([
+        core_1.ViewChild(add_form_component_1.AddFormComponent), 
+        __metadata('design:type', add_form_component_1.AddFormComponent)
+    ], AddComponent.prototype, "addForm", void 0);
     AddComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
+            directives: [add_form_component_1.AddFormComponent],
             templateUrl: 'add.component.html'
         }), 
         __metadata('design:paramtypes', [])

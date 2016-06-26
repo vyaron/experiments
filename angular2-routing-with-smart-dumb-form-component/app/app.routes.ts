@@ -10,7 +10,7 @@ import {CanDeactivateGuard} from "./shared/index";
 
 export const AppRoutes: RouterConfig = [
   { path: 'home',  component: HomeComponent },
-  { path: 'add', component: AddComponent },
+  { path: 'add', component: AddComponent, canDeactivate: [CanDeactivateGuard] },
   { path: '', redirectTo: '/home', terminal: true}
 ];
 

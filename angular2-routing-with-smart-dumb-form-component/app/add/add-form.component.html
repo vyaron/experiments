@@ -1,0 +1,14 @@
+<form [formGroup]="addForm">
+    <table>
+        <tr>
+            <td><label>String value:</label></td>
+            <td><input type="text" formControlName="stringValue"></td>
+        </tr>
+        <tr>
+            <td><label>Number value:</label></td>
+            <td><input type="number" formControlName="numberValue"></td>
+        </tr>
+    </table>
+
+    <button [disabled]="!addForm.valid" type="submit">Submit</button>
+</form>
