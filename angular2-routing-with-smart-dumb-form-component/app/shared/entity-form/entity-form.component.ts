@@ -10,7 +10,8 @@ import {Entity} from "../index";
     selector: 'entity-form',
     changeDetection: ChangeDetectionStrategy.OnPush,
     directives: [REACTIVE_FORM_DIRECTIVES],
-    templateUrl: 'entity-form.component.html'
+    templateUrl: 'entity-form.component.html',
+    styleUrls: ['entity-form.component.css']
 })
 export class EntityFormComponent implements OnInit, CanComponentDeactivate {
     @Input() entity: Entity;
@@ -32,7 +33,7 @@ export class EntityFormComponent implements OnInit, CanComponentDeactivate {
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        console.log("Changes in EntityForm - rebuilding form", this.entity);
+        console.log("Changes in EntityForm", changes);
 
         this.buildForm();
 

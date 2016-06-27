@@ -1,0 +1,9 @@
+:host {
+    display: flex;
+    flex-direction: column;
+}
+
+.guidance {
+    border-left: 1px lightgray solid;
+    padding-left: 16px;
+}

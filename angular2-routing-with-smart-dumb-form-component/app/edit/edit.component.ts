@@ -7,10 +7,10 @@ import {EntityFormComponent, Entity} from "../shared/index";
 @Component({
     moduleId: module.id,
     directives: [EntityFormComponent],
-    templateUrl: 'add.component.html',
-    styleUrls: ["add.component.css"]
+    templateUrl: 'edit.component.html',
+    styleUrls: ["edit.component.css"]
 })
-export class AddComponent implements OnInit, CanComponentDeactivate {
+export class EditComponent implements OnInit, CanComponentDeactivate {
     entity: Entity;
     @ViewChild(EntityFormComponent) entityForm: EntityFormComponent;
 

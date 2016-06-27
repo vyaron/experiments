@@ -1,0 +1,13 @@
+<div class="flex-row">
+    <h4 class="flex">Entity list</h4>
+    <a [routerLink]="['/list/add']">Add new entity</a>
+</div>
+
+<div class="flex-row">
+    <a 
+        class="entity" 
+        *ngFor="let entity of entityService.entities"
+        [routerLink]="['/list', entity.id]">{{entity.id}}</a>
+</div>
+
+<router-outlet></router-outlet>
